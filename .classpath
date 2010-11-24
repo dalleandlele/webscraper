@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="com.google.appengine.eclipse.core.GAE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/home/android/library/jtidy/jtidy-r938.jar"/>
+	<classpathentry kind="lib" path="/home/android/library/httpcomponents-client-4.0.3/lib/httpclient-4.0.3.jar"/>
+	<classpathentry kind="lib" path="/home/android/library/httpcomponents-client-4.0.3/lib/httpcore-4.0.1.jar"/>
+	<classpathentry kind="lib" path="/home/android/library/httpcomponents-client-4.0.3/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/home/android/library/json-lib-2.3-jdk15.jar"/>
+	<classpathentry kind="lib" path="/home/android/library/commons-lang-2.5/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="/home/android/library/ezmorph-1.0.6.jar"/>
+	<classpathentry kind="lib" path="/home/android/library/commons-collections-3.2.1/commons-collections-3.2.1.jar"/>
+	<classpathentry kind="lib" path="/home/android/library/commons-beanutils-1.8.3/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/auth.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-fileupload-1.2.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/commons-io.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/profilerImpl.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/consoleImpl.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/baseViewerImpl.jar"/>
+	<classpathentry kind="output" path="war/WEB-INF/classes"/>
+</classpath>

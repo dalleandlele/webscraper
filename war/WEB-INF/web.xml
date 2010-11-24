@@ -1,0 +1,110 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<servlet>
+		<servlet-name>WebScraper</servlet-name>
+		<servlet-class>it.web.scraping.WebScraperServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>WebScraper</servlet-name>
+		<url-pattern>/webscraper</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+	<filter>
+        <filter-name>appstats</filter-name>
+        <filter-class>com.google.appengine.tools.appstats.AppstatsFilter</filter-class>
+        <init-param>
+            <param-name>logMessage</param-name>
+            <param-value>Appstats available: /appstats/details?time={ID}</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>appstats</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <servlet>
+        <servlet-name>appstats</servlet-name>
+        <servlet-class>com.google.appengine.tools.appstats.AppstatsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>appstats</servlet-name>
+        <url-pattern>/appstats/*</url-pattern>
+    </servlet-mapping>
+
+    <security-constraint>
+        <web-resource-collection>
+            <url-pattern>/appstats/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+<!--OnPositive Tools-->
+<servlet>
+		<servlet-name>profilerServlet</servlet-name>
+		<servlet-class>com.onpositive.gae.tools.servlets.ProfilerServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+		<servlet-name>profilerServlet</servlet-name>
+		<url-pattern>/appwrench/profiler</url-pattern>
+</servlet-mapping>
+<filter id="profilerFilter">
+	 <filter-name>profileJsp</filter-name>
+     <filter-class>com.onpositive.gae.tools.servlets.JSPFilter</filter-class>
+</filter>
+<filter-mapping>
+        <filter-name>profileJsp</filter-name>
+        <url-pattern>*.jsp</url-pattern>
+</filter-mapping>
+<servlet>
+<servlet-name>SessionAuth</servlet-name>
+<servlet-class>com.onpositive.auth.AuthServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>SessionAuth</servlet-name>
+<url-pattern>/appwrench/auth</url-pattern>
+</servlet-mapping>
+<servlet>
+		<servlet-name>profilerConsoleServlet</servlet-name>
+		<servlet-class>com.onpositive.gae.tools.servlets.ConsoleServlet
+		</servlet-class>
+	</servlet>
+<servlet-mapping>
+		<servlet-name>profilerConsoleServlet</servlet-name>
+		<url-pattern>/appwrench/console</url-pattern>
+	</servlet-mapping>
+<servlet>
+		<servlet-name>baseViewerServlet</servlet-name>
+		<servlet-class>com.onpositive.gae.tools.servlets.BaseViewerServlet
+		</servlet-class>
+	</servlet>
+<servlet-mapping>
+		<servlet-name>baseViewerServlet</servlet-name>
+		<url-pattern>/appwrench/baseviewer</url-pattern>
+	</servlet-mapping>
+<servlet>
+		<servlet-name>SessionAuth</servlet-name>
+		<servlet-class>com.onpositive.auth.AuthServlet</servlet-class>
+	</servlet>
+<servlet-mapping>
+		<servlet-name>SessionAuth</servlet-name>
+		<url-pattern>/appwrench/auth</url-pattern>
+	</servlet-mapping>
+<servlet>
+		<servlet-name>QueueHandler</servlet-name>
+		<servlet-class>com.onpositive.gae.tools.servlets.QueueHandlerServlet
+		</servlet-class>
+	</servlet>
+<servlet-mapping>
+		<servlet-name>QueueHandler</servlet-name>
+		<url-pattern>/appwrench/queuehandler</url-pattern>
+	</servlet-mapping>
+<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/appwrench/queuehandler</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+	</security-constraint>
+</web-app>
