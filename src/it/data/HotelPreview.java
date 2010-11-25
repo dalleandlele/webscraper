@@ -14,6 +14,7 @@ public class HotelPreview {
 	private String name;
 	private String address;
 	//if -1 --> no stars
+	
 	private int stars;
 	private String description;
 	private double preference;
