@@ -1,5 +1,6 @@
 package it.web.scraping;
 
+import it.data.Choice;
 import it.web.utility.GAEConnectionManager;
 import it.web.utility.UtilityParser;
 
@@ -34,6 +35,9 @@ import org.w3c.tidy.Tidy;
 
 
 public class LookingDestination extends HttpServlet {
+	
+	
+	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -61,16 +65,20 @@ public class LookingDestination extends HttpServlet {
 		
 		System.out.println("Invoking request...");
 		
-		ArrayList<String> list = getResult(url);
-		for(String s : list) {
-			resp.getWriter().println(s);
+		ArrayList<Choice> list = getResult(url);
+		for(Choice c : list) {
+			resp.getWriter().println("Name: " + c.getName());
+			resp.getWriter().println("Link: " + c.getLink());
+			resp.getWriter().println("Country: " + c.getCountry());
+			resp.getWriter().println("Number: " + c.getNumber());
 		}
 		
 	}
 	
 	
-	private static ArrayList<String> getResult(URL url) throws ClientProtocolException, IOException {
-		ArrayList<String> listLink = new ArrayList<String>();
+	private static ArrayList<Choice> getResult(URL url) throws ClientProtocolException, IOException {
+		//ArrayList<String> listLink = new ArrayList<String>();
+		ArrayList<Choice> list = new ArrayList<Choice>();
 		HttpParams httpParams = new BasicHttpParams();
 		ClientConnectionManager connectionManager = new GAEConnectionManager();
 		
@@ -96,28 +104,43 @@ public class LookingDestination extends HttpServlet {
 
 		Node table = n.item(0);
 		ArrayList<Node> trList = UtilityParser.getNodeChildWithName(table.getChildNodes(), "tr");
-
+		
 		for (int i = 0; i < trList.size(); i++) {
-			System.out.println(trList.get(i).getNodeName());
-
+			Choice c = new Choice();
 			Node tdNode = trList.get(i).getFirstChild();
-			
-			Node link = tdNode.getFirstChild();
-			
-			NamedNodeMap map = link.getAttributes();
-			for (int z = 0; z < map.getLength(); z++) {
-				if (map.item(z).getNodeName().equals("href")) {
-					StringBuilder tmpLink = new StringBuilder(map.item(z).getNodeValue());
-					System.out.println(tmpLink.toString());
-					
-					listLink.add(tmpLink.toString());
+			/*recupero i <td>
+			nel primo c'è l'immagine e la tralascio
+			nel secondo il link e il nome della disamb
+			nel terzo il paese
+			nel quarto il numero di hotel*/
+			ArrayList<Node> td = UtilityParser.getNodeChildWithName(trList.get(i).getChildNodes(), "td");
+			//salto il primo
+			for(int indexTD = 1; indexTD < td.size();indexTD++) {
+				switch (indexTD) {
+				case 1:
+					Node a = UtilityParser.getNodeChildWithName(td.get(indexTD).getChildNodes(), "a").get(0);
+					c.setLink(UtilityParser.getAttribute(a, "href"));
+					assert a.getFirstChild().getNodeType() == Node.TEXT_NODE;
+					c.setName(a.getFirstChild().getNodeValue());
+					break;
+				case 2:
+					Node span = UtilityParser.getNodeChildWithName(td.get(indexTD).getChildNodes(), "span").get(0);
+					assert span.getFirstChild().getNodeType() == Node.TEXT_NODE;
+					c.setCountry(span.getFirstChild().getNodeValue());
+					break;
+				case 3:
+					assert td.get(indexTD).getFirstChild().getNodeType() == Node.TEXT_NODE;
+					c.setNumber(td.get(indexTD).getFirstChild().getNodeValue());
+					break;
 				}
 			}
+			
+			list.add(c);
 
 		}
-		
-		return listLink;
-
+		return list;
 	}
-
+	
 }
+
+
