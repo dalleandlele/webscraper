@@ -84,15 +84,16 @@ public class WebScraperServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 
 		// prendo solo il primo link...
 		doChoice(new URL("http://www.booking.com" + listLink.get(0)));
 		
 
-		for (HotelPreview h : listHotel) {
+		/*for (HotelPreview h : listHotel) {
 			resp.getWriter().println(h);
 			System.out.println(h);
-		}
+		}*/
 		
 		//JSONArray json2 = JSONArray.fromObject(listHotel);
 		//System.out.println(json2);
