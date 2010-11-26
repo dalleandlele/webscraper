@@ -7,6 +7,15 @@
 		<servlet-name>WebScraper</servlet-name>
 		<url-pattern>/webscraper</url-pattern>
 	</servlet-mapping>
+	<servlet>
+        <servlet-name>LookingDestination</servlet-name>
+        <servlet-class>it.web.scraping.LookingDestination</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>LookingDestination</servlet-name>
+        <url-pattern>/lookingdestination</url-pattern>
+    </servlet-mapping>
+	
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>

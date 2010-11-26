@@ -1,0 +1,123 @@
+package it.web.scraping;
+
+import it.web.utility.GAEConnectionManager;
+import it.web.utility.UtilityParser;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.tidy.Tidy;
+
+
+public class LookingDestination extends HttpServlet {
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		String where = req.getParameter("where");
+		where = URLEncoder.encode(where, "UTF-8");
+
+		String checkin_monthday = req.getParameter("checkin_monthday");
+		String checkin_year_month = req.getParameter("checkin_year_month");
+		String checkout_monthday = req.getParameter("checkout_monthday");
+		String checkout_year_month = req.getParameter("checkout_year_month");
+		URL url = new URL(
+				//"http://www.booking.com/searchresults.html?error_url=http%3A%2F%2Fwww.booking.com%2Findex.html%3Fsid%3D10119a8c528f688bc9350270f17d322d%3B&sid=10119a8c528f688bc9350270f17d322d&si=ai%2Cco%2Cci%2Cre%2Cdi&ss="
+				"http://www.booking.com/searchresults.html?error_url=http%3A%2F%2Fwww.booking.com%2Findex.html&si=ai%2Cco%2Cci%2Cre%2Cdi&ss="
+						+ where
+						+ "&checkin_monthday="
+						+ checkin_monthday
+						+ "&checkin_year_month="
+						+ checkin_year_month
+						+ "&checkout_monthday="
+						+ checkout_monthday
+						+ "&checkout_year_month="
+						+ checkout_year_month
+						+ "&group_adults=1&group_children=0&clear_group=1");
+		System.out.println(url.toString());
+		
+		System.out.println("Invoking request...");
+		
+		ArrayList<String> list = getResult(url);
+		for(String s : list) {
+			resp.getWriter().println(s);
+		}
+		
+	}
+	
+	
+	private static ArrayList<String> getResult(URL url) throws ClientProtocolException, IOException {
+		ArrayList<String> listLink = new ArrayList<String>();
+		HttpParams httpParams = new BasicHttpParams();
+		ClientConnectionManager connectionManager = new GAEConnectionManager();
+		
+		HttpClient httpClient = new DefaultHttpClient(connectionManager, httpParams);
+		
+		HttpProtocolParams.setUserAgent(httpClient.getParams(), "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Ubuntu/10.04 Chromium/7.0.517.44 Chrome/7.0.517.44 Safari/534.7");
+		
+		HttpGet httpGet = new HttpGet(url.toString());
+		HttpResponse response = httpClient.execute(httpGet);
+		HttpEntity entity = response.getEntity();
+		
+		assert entity != null : "Problema nella richiesta http";
+		
+		InputStream instream = entity.getContent();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(instream));
+		
+		Tidy ty = new Tidy();
+		ty.setShowWarnings(false);
+		
+		Document dom = ty.parseDOM(reader, null);
+
+		NodeList n = dom.getElementsByTagName("table");
+
+		Node table = n.item(0);
+		ArrayList<Node> trList = UtilityParser.getNodeChildWithName(table.getChildNodes(), "tr");
+
+		for (int i = 0; i < trList.size(); i++) {
+			System.out.println(trList.get(i).getNodeName());
+
+			Node tdNode = trList.get(i).getFirstChild();
+			
+			Node link = tdNode.getFirstChild();
+			
+			NamedNodeMap map = link.getAttributes();
+			for (int z = 0; z < map.getLength(); z++) {
+				if (map.item(z).getNodeName().equals("href")) {
+					StringBuilder tmpLink = new StringBuilder(map.item(z).getNodeValue());
+					System.out.println(tmpLink.toString());
+					
+					listLink.add(tmpLink.toString());
+				}
+			}
+
+		}
+		
+		return listLink;
+
+	}
+
+}

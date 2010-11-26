@@ -320,8 +320,7 @@ public class WebScraperServlet extends HttpServlet {
 	}
 
 	private String findChildsTextNode(Node n) {
-		
-		
+
 		boolean stop = false;
 		
 		while(!stop) {
@@ -421,14 +420,12 @@ public class WebScraperServlet extends HttpServlet {
 	}
 
 	private void getDisambiguation(URL url) throws IOException, URISyntaxException {
-		/*BufferedReader reader = new BufferedReader(new InputStreamReader(url
-				.openStream()));*/
 		
 		HttpParams httpParams = new BasicHttpParams();
 		ClientConnectionManager connectionManager = new GAEConnectionManager();
 		
 		HttpClient httpClient = new DefaultHttpClient(connectionManager, httpParams);
-		//httpClient.getParams().setParameter(HttpMethodParams.USER_AGENT,
+		
 		HttpProtocolParams.setUserAgent(httpClient.getParams(), "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Ubuntu/10.04 Chromium/7.0.517.44 Chrome/7.0.517.44 Safari/534.7");
 		
 		
