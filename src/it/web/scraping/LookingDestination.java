@@ -1,6 +1,7 @@
 package it.web.scraping;
 
 import it.data.Choice;
+import it.web.utility.Commons;
 import it.web.utility.GAEConnectionManager;
 import it.web.utility.UtilityParser;
 
@@ -17,6 +18,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -28,7 +31,6 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.tidy.Tidy;
@@ -61,9 +63,9 @@ public class LookingDestination extends HttpServlet {
 						+ "&checkout_year_month="
 						+ checkout_year_month
 						+ "&group_adults=1&group_children=0&clear_group=1");
-		System.out.println(url.toString());
+		//System.out.println(url.toString());
 		
-		System.out.println("Invoking request...");
+		//System.out.println("Invoking request...");
 		
 		ArrayList<Choice> list = getResult(url);
 		for(Choice c : list) {
@@ -72,6 +74,18 @@ public class LookingDestination extends HttpServlet {
 			resp.getWriter().println("Country: " + c.getCountry());
 			resp.getWriter().println("Number: " + c.getNumber());
 		}
+		
+		/*JSONArray json2 = JSONArray.fromObject(list);
+		System.out.println(json2);
+		resp.getWriter().println("\n"+json2+"\n");
+		*/
+		StringBuilder response = new StringBuilder("[");
+		for(Choice c : list) {
+			response.append(c.toString()).append(",");
+		}
+		response.deleteCharAt(response.length()-1);
+		response.append("]");
+		resp.getWriter().println(response.toString());
 		
 	}
 	
@@ -84,7 +98,7 @@ public class LookingDestination extends HttpServlet {
 		
 		HttpClient httpClient = new DefaultHttpClient(connectionManager, httpParams);
 		
-		HttpProtocolParams.setUserAgent(httpClient.getParams(), "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Ubuntu/10.04 Chromium/7.0.517.44 Chrome/7.0.517.44 Safari/534.7");
+		HttpProtocolParams.setUserAgent(httpClient.getParams(), Commons.USER_AGENT);
 		
 		HttpGet httpGet = new HttpGet(url.toString());
 		HttpResponse response = httpClient.execute(httpGet);
@@ -107,7 +121,6 @@ public class LookingDestination extends HttpServlet {
 		
 		for (int i = 0; i < trList.size(); i++) {
 			Choice c = new Choice();
-			Node tdNode = trList.get(i).getFirstChild();
 			/*recupero i <td>
 			nel primo c'è l'immagine e la tralascio
 			nel secondo il link e il nome della disamb

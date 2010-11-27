@@ -49,6 +49,13 @@ public class Choice {
 		this.number = number;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{\"country\":\"").append(country).append("\",\"link\":\"").append(link).append("\",\"name\":\"").append(name).append("\",\"number\":\"").append(number).append("\"}");
+		
+		return sb.toString();
+	}
 	
 	
 }

@@ -2,6 +2,7 @@ package it.web.scraping;
 
 import it.data.HotelPreview;
 import it.data.RoomPreview;
+import it.web.utility.Commons;
 import it.web.utility.DOMPrinter;
 import it.web.utility.GAEConnectionManager;
 
@@ -129,7 +130,7 @@ public class WebScraperServlet extends HttpServlet {
 		ClientConnectionManager connectionManager = new GAEConnectionManager();
 		
 		HttpClient httpClient = new DefaultHttpClient(connectionManager, httpParams);
-		HttpProtocolParams.setUserAgent(httpClient.getParams(), "Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.7 (KHTML, like Gecko) Ubuntu/10.04 Chromium/7.0.517.44 Chrome/7.0.517.44 Safari/534.7");
+		HttpProtocolParams.setUserAgent(httpClient.getParams(), Commons.USER_AGENT);
 		
 		
 		HttpGet httpGet = new HttpGet(url.toString());
