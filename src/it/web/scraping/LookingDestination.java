@@ -1,6 +1,7 @@
 package it.web.scraping;
 
 import it.data.Choice;
+import it.data.db.ManagerDB;
 import it.web.utility.Commons;
 import it.web.utility.GAEConnectionManager;
 import it.web.utility.UtilityParser;
@@ -12,6 +13,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -38,11 +41,14 @@ import org.w3c.tidy.Tidy;
 
 public class LookingDestination extends HttpServlet {
 	
-	
+	private final static String thisURL = "/lookingdestination";
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		
+		ManagerDB.writeAcces(req.getRemoteAddr(), new Date(), thisURL);
+		
 		String where = req.getParameter("where");
 		where = URLEncoder.encode(where, "UTF-8");
 
@@ -68,17 +74,7 @@ public class LookingDestination extends HttpServlet {
 		//System.out.println("Invoking request...");
 		
 		ArrayList<Choice> list = getResult(url);
-		for(Choice c : list) {
-			resp.getWriter().println("Name: " + c.getName());
-			resp.getWriter().println("Link: " + c.getLink());
-			resp.getWriter().println("Country: " + c.getCountry());
-			resp.getWriter().println("Number: " + c.getNumber());
-		}
-		
-		/*JSONArray json2 = JSONArray.fromObject(list);
-		System.out.println(json2);
-		resp.getWriter().println("\n"+json2+"\n");
-		*/
+
 		StringBuilder response = new StringBuilder("[");
 		for(Choice c : list) {
 			response.append(c.toString()).append(",");

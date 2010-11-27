@@ -2,6 +2,7 @@ package it.web.scraping;
 
 import it.data.HotelPreview;
 import it.data.RoomPreview;
+import it.data.db.ManagerDB;
 import it.web.utility.Commons;
 import it.web.utility.DOMPrinter;
 import it.web.utility.GAEConnectionManager;
@@ -15,6 +16,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.servlet.http.*;
 
@@ -40,16 +42,19 @@ import com.google.appengine.repackaged.org.json.JSONObject;
 
 @SuppressWarnings("serial")
 public class WebScraperServlet extends HttpServlet {
-
+	
+	private final static String thisURL = "/webscraper";
+	
 	ArrayList<String> listLink = new ArrayList<String>();
 	ArrayList<String> listPlaces = new ArrayList<String>();
-
+	
 	ArrayList<HotelPreview> listHotel = new ArrayList<HotelPreview>();
 	private String checkin_monthday, checkin_year_month, checkout_monthday, checkout_year_month;
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException {
-
+		ManagerDB.writeAcces(req.getRemoteAddr(), new Date(), thisURL);
+		
 		String where = req.getParameter("where");
 		where = URLEncoder.encode(where, "UTF-8");
 
